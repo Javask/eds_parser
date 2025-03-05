@@ -6,4 +6,6 @@ edition = "2024"
 [lib]
 
 [dependencies]
+chrono = "0.4.40"
+regex = "1.11.1"
 tempfile = "3.17.1"
