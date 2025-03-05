@@ -5,6 +5,7 @@ use crate::structured_file::StructuredFileObject;
 use crate::ParseError;
 use crate::eds_file::utils::*;
 
+#[derive(Debug)]
 pub struct EDSFileInfo {
     pub file_name: String,
     pub file_version: u8,

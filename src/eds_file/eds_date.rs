@@ -4,6 +4,7 @@ use crate::{ParseError, structured_file::StructuredFileObject};
 
 use super::utils::parse_required_str;
 
+#[derive(Debug, PartialEq)]
 pub struct EDSDate {
    pub year: i32,
    pub month: u8,

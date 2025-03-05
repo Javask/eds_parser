@@ -17,6 +17,7 @@ pub use eds_version::EDSVersion;
 use super::structured_file::StructuredFile;
 use crate::ParseError;
 
+#[derive(Debug)]
 pub struct EDSFile {
     pub file_info: EDSFileInfo,
     pub device_info: EDSDeviceInfo,

@@ -54,10 +54,10 @@ pub fn parse_required_uint<T: FromStr<Err = ParseIntError> + TryFrom<u64>>(
             value: val[2..].to_string(),
         })
     } else if val.starts_with("0") && val != "0" {
-        parse_hex_str::<T, 3>(&val[2..]).ok_or(ParseError::ParseOctalError {
+        parse_hex_str::<T, 3>(&val[1..]).ok_or(ParseError::ParseOctalError {
             object: name.to_string(),
             section: obj.get_name().clone(),
-            value: val[2..].to_string(),
+            value: val[1..].to_string(),
         })
     } else {
         val.parse::<T>().or_else(|e| {
