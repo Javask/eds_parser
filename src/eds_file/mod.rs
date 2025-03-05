@@ -7,6 +7,9 @@ mod eds_version;
 
 mod utils;
 
+#[cfg(test)]
+mod tests;
+
 pub use eds_device_info::EDSDeviceInfo;
 pub use eds_file_info::EDSFileInfo;
 pub use eds_version::EDSVersion;

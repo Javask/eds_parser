@@ -2,6 +2,9 @@ use crate::error::ParseError;
 use crate::raw_file::RawFile;
 use std::collections::HashMap;
 
+#[cfg(test)]
+mod tests;
+
 pub struct StructuredFileObject {
     name: String,
     values: HashMap<String, String>,

@@ -1,5 +1,5 @@
 use crate::raw_file::RawFile;
-use super::utils::*;
+use crate::tests::utils::*;
 
 #[test]
 fn test_phase_1_file_read() {

@@ -1,6 +1,4 @@
-mod raw_file;
-mod structured_file;
-mod utils;
+pub(crate) mod utils;
 
 use crate::load_file;
 

@@ -1,6 +1,6 @@
 use crate::raw_file::RawFile;
 use crate::structured_file::StructuredFile;
-use super::utils::*;
+use crate::tests::utils::*;
 use crate::ParseError;
 
 #[test]

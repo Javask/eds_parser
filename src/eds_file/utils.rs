@@ -25,19 +25,6 @@ pub fn parse_hex_str<T: TryFrom<u64>, const BITS: u8>(string: &str) -> Option<T>
     T::try_from(out).ok()
 }
 
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn test_hex_parse() {
-        let res = super::parse_hex_str::<u64, 4>("7FF");
-        assert!(res.is_some());
-        let res2 = super::parse_hex_str::<u64, 3>("333");
-        assert_eq!(res2.unwrap(), 219);
-        assert!(super::parse_hex_str::<u64, 4>("ü").is_none());
-        assert!(super::parse_hex_str::<u64, 4>("??").is_none());
-    }
-}
-
 pub fn parse_required_str<'a>(
     obj: &'a StructuredFileObject,
     name: &str,

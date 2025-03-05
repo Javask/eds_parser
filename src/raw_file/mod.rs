@@ -2,6 +2,9 @@ use std::{fs::File, io::Read};
 
 use crate::error::ParseError;
 
+#[cfg(test)]
+mod tests;
+
 pub struct RawFile {
     lines: Vec<String>,
 }
