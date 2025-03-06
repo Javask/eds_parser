@@ -33,6 +33,9 @@ pub enum ParseError {
         object: String,
         section: String,
     },
+    DoubleSectionDefinition {
+        section: String,
+    },
     MissingRequiredObject {
         object: String,
         section: String,
@@ -70,6 +73,9 @@ impl Display for ParseError {
                     "Failed to parse hex value \"{}\" for \"{}\" in section \"{}\"",
                     value, object, section
                 )
+            }
+            Self::DoubleSectionDefinition { section } => {
+                write!(f, "Double definition of section \"{}\"", section)
             }
             Self::ParseOctalError {
                 object,

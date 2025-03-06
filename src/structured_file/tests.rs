@@ -1,7 +1,7 @@
+use crate::ParseError;
 use crate::raw_file::RawFile;
 use crate::structured_file::StructuredFile;
 use crate::tests::utils::*;
-use crate::ParseError;
 
 #[test]
 fn test_phase_2_success() {
@@ -71,7 +71,6 @@ fn test_phase_2_invalid_lines_2() {
     }
 }
 
-
 #[test]
 fn test_phase_2_invalid_lines_3() {
     let data = vec!["[DummyUsage]", "=1"];
@@ -82,6 +81,29 @@ fn test_phase_2_invalid_lines_3() {
     assert_eq!(sfile.is_err(), true);
     match sfile.err().unwrap() {
         ParseError::InvalidFormatting { line } => assert_eq!(line, "=1"),
+        _ => panic!(),
+    }
+}
+
+#[test]
+fn test_phase_2_double_section() {
+    let data = vec![
+        "[DummyUsage]",
+        "Dummy0001=aaaa",
+        "Dummy0002=2",
+        "Dummy0003=--..,.,.-;\"\"",
+        "Dummy0004=\"",
+        ";Comment",
+        "[DummyUsage]",
+        "Dummy0005=\"",
+    ];
+    let raw = make_string(&data);
+    let mut tmp = make_tmp_file(raw);
+    let rfile = RawFile::new_from_file(&mut tmp).expect("Failed to read back lines from file!");
+    let sfile = StructuredFile::parse(rfile);
+    assert_eq!(sfile.is_err(), true);
+    match sfile.err().unwrap() {
+        ParseError::DoubleSectionDefinition { section } => assert_eq!(section, "DummyUsage"),
         _ => panic!(),
     }
 }

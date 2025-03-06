@@ -35,14 +35,14 @@ impl StructuredFileObject {
     pub fn get_values(&self) -> &HashMap<String, String> {
         &self.values
     }
-    
+
     pub fn get_values_mut(&mut self) -> &mut HashMap<String, String> {
         &mut self.values
     }
 }
 
 pub struct StructuredFile {
-    objects: Vec<StructuredFileObject>,
+    objects: HashMap<String, StructuredFileObject>,
 }
 
 impl StructuredFile {
@@ -67,26 +67,20 @@ impl StructuredFile {
 
         Some((key, val))
     }
-    
+
     #[cfg(test)]
-    pub fn get_objects(&self) -> &Vec<StructuredFileObject>{
-        &self.objects
+    pub fn get_objects(&self) -> Vec<&StructuredFileObject> {
+        self.objects.values().collect()
     }
 
     pub fn get_object(&self, name: &str) -> Option<&StructuredFileObject> {
-        let lower_name = name.to_lowercase();
-        for obj in &self.objects{
-            if obj.get_name().to_lowercase() == lower_name{
-                return Some(obj);
-            }
-        }
-        None
+        self.objects.get(&name.to_lowercase())
     }
 
     pub fn parse(raw: RawFile) -> Result<StructuredFile, ParseError> {
         let lines = raw.get_lines();
         let mut out = StructuredFile {
-            objects: Vec::new(),
+            objects: HashMap::new(),
         };
         let mut obj = StructuredFileObject::new("".to_string());
 
@@ -99,7 +93,13 @@ impl StructuredFile {
             let section_name = Self::parse_section_line(line);
             if section_name.is_some() {
                 if !obj.get_name().is_empty() {
-                    out.objects.push(obj);
+                    let key = obj.get_name().to_lowercase();
+                    if out.objects.contains_key(&key) {
+                        return Err(ParseError::DoubleSectionDefinition {
+                            section: obj.get_name().clone(),
+                        });
+                    }
+                    out.objects.insert(key, obj);
                 }
                 obj = StructuredFileObject::new(section_name.unwrap().to_string());
                 continue;
@@ -126,7 +126,13 @@ impl StructuredFile {
             });
         }
         if !obj.get_name().is_empty() {
-            out.objects.push(obj);
+            let key = obj.get_name().to_lowercase();
+            if out.objects.contains_key(&key) {
+                return Err(ParseError::DoubleSectionDefinition {
+                    section: obj.get_name().clone(),
+                });
+            }
+            out.objects.insert(key, obj);
         }
         Ok(out)
     }
