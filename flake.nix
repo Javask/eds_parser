@@ -30,11 +30,10 @@
         with pkgs; {
           devShells.default = mkShell {
             buildInputs = [rustToolchain
-            
+                cargo-llvm-cov
                 fontconfig
-
-    vulkan-headers
-    vulkan-loader
+                vulkan-headers
+                vulkan-loader
             ];
             LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath (with pkgs; [
               libGL
