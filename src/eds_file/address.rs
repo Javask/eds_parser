@@ -1,9 +1,9 @@
-use std::{fmt::Display, hash::Hash};
+use std::{fmt::{Debug, Display}, hash::Hash};
 
-#[derive(Debug, PartialEq, Clone, Eq)]
+#[derive(PartialEq, Clone, Eq, Copy)]
 pub struct Address {
-    index: u16,
-    subindex: u8,
+    pub index: u16,
+    pub subindex: u8,
 }
 
 impl Address {
@@ -15,9 +15,16 @@ impl Address {
     }
 }
 
+impl Debug for Address {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "Address {{0x{:X}.{}}}", self.index, self.subindex)
+    }
+}
+
+
 impl Display for Address {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "Address {{0x{:x}.{}}}", self.index, self.subindex)
+        write!(f, "Address {{0x{:X}.{}}}", self.index, self.subindex)
     }
 }
 

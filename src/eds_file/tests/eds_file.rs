@@ -1,7 +1,7 @@
 use crate::ParseError;
-use crate::eds_file::{Address, EDSFile};
+use crate::eds_file::EDSFile;
 use crate::raw_file::RawFile;
-use crate::structured_file::{StructuredFile, StructuredFileObject};
+use crate::structured_file::StructuredFile;
 use crate::tests::utils::*;
 
 #[test]
@@ -252,69 +252,4 @@ fn test_phase_3_partial_device_info() {
         }
         _ => panic!(),
     }
-}
-
-#[test]
-fn test_parse_object_list() {
-    let mut obj_empty = StructuredFileObject::new("test_sec".to_string());
-    obj_empty
-        .get_values_mut()
-        .insert("SupportedObjects".to_string(), "0".to_string());
-    let empty_list =
-        EDSFile::parse_object_list_from_obj(&obj_empty).expect("Failed to parse empty list!");
-    assert_eq!(empty_list.len(), 0);
-
-    let mut obj_succ = StructuredFileObject::new("test_sec".to_string());
-    obj_succ
-        .get_values_mut()
-        .insert("SupportedObjects".to_string(), "3".to_string());
-    obj_succ
-        .get_values_mut()
-        .insert("1".to_string(), "0x1000".to_string());
-    obj_succ
-        .get_values_mut()
-        .insert("2".to_string(), "0x1001".to_string());
-    obj_succ
-        .get_values_mut()
-        .insert("3".to_string(), "0x1002".to_string());
-
-    let non_empty_list =
-        EDSFile::parse_object_list_from_obj(&obj_succ).expect("Failed to parse empty list!");
-    assert_eq!(non_empty_list.len(), 3);
-    assert!(non_empty_list.get(&Address::new(0x1000, 0)).is_some());
-    assert!(non_empty_list.get(&Address::new(0x1001, 0)).is_some());
-    assert!(non_empty_list.get(&Address::new(0x1002, 0)).is_some());
-
-    let mut obj_missing = StructuredFileObject::new("test_sec".to_string());
-    obj_missing
-        .get_values_mut()
-        .insert("SupportedObjects".to_string(), "2".to_string());
-    obj_missing
-        .get_values_mut()
-        .insert("1".to_string(), "0x1000".to_string());
-    obj_missing
-        .get_values_mut()
-        .insert("3".to_string(), "0x1002".to_string());
-    assert!(!EDSFile::parse_object_list_from_obj(&obj_missing).is_ok());
-
-    let mut obj_missing2 = StructuredFileObject::new("test_sec".to_string());
-    obj_missing2
-        .get_values_mut()
-        .insert("SupportedObjects".to_string(), "3".to_string());
-    obj_missing2
-        .get_values_mut()
-        .insert("1".to_string(), "0x1000".to_string());
-    obj_missing2
-        .get_values_mut()
-        .insert("2".to_string(), "0x1001".to_string());
-    assert!(!EDSFile::parse_object_list_from_obj(&obj_missing2).is_ok());
-
-    let mut obj_missing3 = StructuredFileObject::new("test_sec".to_string());
-    obj_missing3
-        .get_values_mut()
-        .insert("1".to_string(), "0x1000".to_string());
-    obj_missing3
-        .get_values_mut()
-        .insert("2".to_string(), "0x1001".to_string());
-    assert!(!EDSFile::parse_object_list_from_obj(&obj_missing3).is_ok());
 }

@@ -1,5 +1,7 @@
 use std::fmt::Display;
 
+use crate::eds_file::{AccessMode, Address, ObjectType};
+
 #[derive(Debug)]
 pub enum ParseError {
     IOError(std::io::Error),
@@ -22,6 +24,18 @@ pub enum ParseError {
         object: String,
         section: String,
         err: std::num::ParseFloatError,
+    },
+    InvalidObjectType {
+        address: Address,
+        obj_type: u8,
+    },
+    InvalidAccessMode {
+        address: Address,
+        access_mode: String,
+    },
+    InvalidDataType {
+        address: Address,
+        data_type: u16,
     },
     InvalidFormatting {
         line: String,
@@ -52,6 +66,20 @@ pub enum ParseError {
         time_obj: String,
         section: String,
     },
+    InconsistentObjectDefinition {
+        addr: Address,
+    },
+    PDOMappableNotSupportedForAccessType {
+        addr: Address,
+        access_type: AccessMode,
+    },
+    ObjectTypeDoesNotSupportLimits {
+        addr: Address,
+        object_type: ObjectType,
+    },
+    NestedListsUnsupported {
+        addr: Address,
+    },
 }
 
 impl From<std::io::Error> for ParseError {
@@ -63,6 +91,44 @@ impl From<std::io::Error> for ParseError {
 impl Display for ParseError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match &self {
+            Self::NestedListsUnsupported { addr } => write!(
+                f,
+                "Nested list at {}, please change all variables to VAR or similar",
+                addr
+            ),
+            Self::PDOMappableNotSupportedForAccessType { addr, access_type } => {
+                write!(
+                    f,
+                    "PDO mapping does not match access type \"{}\" for object {}.",
+                    access_type, addr
+                )
+            }
+            Self::ObjectTypeDoesNotSupportLimits { addr, object_type } => {
+                write!(
+                    f,
+                    "Object {} of type \"{}\" does not support limits!",
+                    addr, object_type
+                )
+            }
+            Self::InconsistentObjectDefinition { addr } => {
+                write!(f, "Object {} is defined inconsistently!", addr)
+            }
+            Self::InvalidObjectType { address, obj_type } => {
+                write!(
+                    f,
+                    "Invalid object type in {}: \"0x{:X}\"",
+                    address, obj_type
+                )
+            }
+            Self::InvalidDataType { address, data_type } => {
+                write!(f, "Invalid data type in {}: \"0x{:X}\"", address, data_type)
+            }
+            Self::InvalidAccessMode {
+                address,
+                access_mode,
+            } => {
+                write!(f, "Invalid access type in {}: \"{}\"", address, access_mode)
+            }
             Self::ParseHexError {
                 object,
                 section,

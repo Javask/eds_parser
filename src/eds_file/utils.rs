@@ -36,6 +36,67 @@ pub fn parse_required_str<'a>(
         })
 }
 
+pub fn parse_required_hex_data(
+    obj: &StructuredFileObject,
+    name: &str,
+) -> Result<Vec<u8>, ParseError> {
+    let val = obj
+        .get_value(name)
+        .ok_or(ParseError::MissingRequiredObject {
+            object: name.to_string(),
+            section: obj.get_name().clone(),
+        })?;
+    if !val.is_ascii() {
+        return Err(ParseError::ParseHexError {
+            object: name.to_string(),
+            section: obj.get_name().clone(),
+            value: val.clone(),
+        });
+    }
+
+    let bytes: Result<Vec<u8>, _> = (0..val.len())
+        .map(|i| u8::from_str_radix(&val[i..i + 1], 16))
+        .collect();
+    bytes.or_else(|e| {
+        Err(ParseError::ParseIntError {
+            object: name.to_string(),
+            section: obj.get_name().clone(),
+            err: e,
+        })
+    })
+}
+
+pub fn parse_required_float(obj: &StructuredFileObject, name: &str) -> Result<f32, ParseError> {
+    let val = obj
+        .get_value(name)
+        .ok_or(ParseError::MissingRequiredObject {
+            object: name.to_string(),
+            section: obj.get_name().clone(),
+        })?;
+    val.parse::<f32>().or_else(|e| {
+        Err(ParseError::ParseFloatError {
+            section: obj.get_name().to_string(),
+            object: name.to_string(),
+            err: e,
+        })
+    })
+}
+pub fn parse_required_double(obj: &StructuredFileObject, name: &str) -> Result<f64, ParseError> {
+    let val = obj
+        .get_value(name)
+        .ok_or(ParseError::MissingRequiredObject {
+            object: name.to_string(),
+            section: obj.get_name().clone(),
+        })?;
+    val.parse::<f64>().or_else(|e| {
+        Err(ParseError::ParseFloatError {
+            section: obj.get_name().to_string(),
+            object: name.to_string(),
+            err: e,
+        })
+    })
+}
+
 pub fn parse_required_uint<T: FromStr<Err = ParseIntError> + TryFrom<u64>>(
     obj: &StructuredFileObject,
     name: &str,
