@@ -37,13 +37,8 @@ impl EDSTime {
         let is_am: bool;
         if am_pm == "AM" {
             is_am = true;
-        } else if am_pm == "PM" {
-            is_am = false;
         } else {
-            return Err(ParseError::InvalidValueFormat {
-                object: name.to_string(),
-                section: obj.get_name().clone(),
-            });
+            is_am = false;
         }
         if hours > 12 || hours == 0 || minute >= 60 {
             return Err(ParseError::InvalidValueFormat {

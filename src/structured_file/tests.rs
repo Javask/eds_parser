@@ -107,3 +107,51 @@ fn test_phase_2_double_section() {
         _ => panic!(),
     }
 }
+
+#[test]
+fn test_phase_2_double_section_2() {
+    let data = vec![
+        "[DummyUsage]",
+        "Dummy0001=aaaa",
+        "Dummy0002=2",
+        "Dummy0003=--..,.,.-;\"\"",
+        "Dummy0004=\"",
+        ";Comment",
+        "[DummyUsage]",
+        "Dummy0005=\"",
+        "[tmp]",
+    ];
+    let raw = make_string(&data);
+    let mut tmp = make_tmp_file(raw);
+    let rfile = RawFile::new_from_file(&mut tmp).expect("Failed to read back lines from file!");
+    let sfile = StructuredFile::parse(rfile);
+    assert_eq!(sfile.is_err(), true);
+    match sfile.err().unwrap() {
+        ParseError::DoubleSectionDefinition { section } => assert_eq!(section, "DummyUsage"),
+        _ => panic!(),
+    }
+}
+
+#[test]
+fn test_phase_2_double_value() {
+    let data = vec![
+        "[DummyUsage]",
+        "Dummy0001=aaaa",
+        "Dummy0001=2",
+        "Dummy0003=--..,.,.-;\"\"",
+        "Dummy0004=\"",
+        ";Comment",
+    ];
+    let raw = make_string(&data);
+    let mut tmp = make_tmp_file(raw);
+    let rfile = RawFile::new_from_file(&mut tmp).expect("Failed to read back lines from file!");
+    let sfile = StructuredFile::parse(rfile);
+    assert_eq!(sfile.is_err(), true);
+    match sfile.err().unwrap() {
+        ParseError::DoubleValueDefinition { section, object } => {
+            assert_eq!(section, "DummyUsage");
+            assert_eq!(object, "Dummy0001");
+        }
+        _ => panic!(),
+    }
+}

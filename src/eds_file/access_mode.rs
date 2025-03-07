@@ -1,5 +1,5 @@
 use std::fmt::Display;
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum AccessMode {
     ReadOnly,
     WriteOnly,
