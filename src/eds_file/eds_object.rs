@@ -29,10 +29,10 @@ pub enum EDSObject {
         object_type: ObjectType,
         data_type: DataType,
         access_mode: AccessMode,
-        default: Option<Box<dyn EDSData>>,
+        default: Option<Box<dyn EDSData + Send>>,
         pdo_mappable: bool,
-        low_limit: Option<Box<dyn EDSData>>,
-        high_limit: Option<Box<dyn EDSData>>,
+        low_limit: Option<Box<dyn EDSData + Send>>,
+        high_limit: Option<Box<dyn EDSData + Send>>,
         refuse_write_on_download: bool,
         refuse_read_on_scan: bool,
     },
@@ -51,10 +51,10 @@ pub enum EDSObject {
         object_type: ObjectType,
         data_type: DataType,
         access_mode: AccessMode,
-        default: Option<Box<dyn EDSData>>,
+        default: Option<Box<dyn EDSData + Send>>,
         pdo_mappable: bool,
-        low_limit: Option<Box<dyn EDSData>>,
-        high_limit: Option<Box<dyn EDSData>>,
+        low_limit: Option<Box<dyn EDSData + Send>>,
+        high_limit: Option<Box<dyn EDSData + Send>>,
         refuse_write_on_download: bool,
         refuse_read_on_scan: bool,
     },
@@ -64,10 +64,16 @@ pub enum EDSObject {
         object_type: ObjectType,
         data_type: DataType,
         access_mode: AccessMode,
-        default: Option<Box<dyn EDSData>>,
+        default: Option<Box<dyn EDSData + Send>>,
         refuse_write_on_download: bool,
         refuse_read_on_scan: bool,
     },
+}
+
+impl Debug for dyn EDSData + Send {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        (self as &dyn EDSData).fmt(f)
+    }
 }
 
 impl EDSObject {
@@ -296,7 +302,7 @@ impl EDSObject {
         obj: &StructuredFileObject,
         data_type: &DataType,
         name: &str,
-    ) -> Result<Option<Box<dyn EDSData>>, ParseError> {
+    ) -> Result<Option<Box<dyn EDSData + Send>>, ParseError> {
         if obj.get_value(name).is_none() {
             return Ok(None);
         }
