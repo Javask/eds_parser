@@ -8,6 +8,7 @@ use crate::{
 use super::{
     Address,
     access_mode::AccessMode,
+    clone_eds_value,
     data_type::{DataType, EDSValue},
     object_type::ObjectType,
     utils::{
@@ -29,10 +30,10 @@ pub enum EDSObject {
         object_type: ObjectType,
         data_type: DataType,
         access_mode: AccessMode,
-        default: Option<Box<dyn EDSValue + Send>>,
+        default: Option<Box<dyn EDSValue>>,
         pdo_mappable: bool,
-        low_limit: Option<Box<dyn EDSValue + Send>>,
-        high_limit: Option<Box<dyn EDSValue + Send>>,
+        low_limit: Option<Box<dyn EDSValue>>,
+        high_limit: Option<Box<dyn EDSValue>>,
         refuse_write_on_download: bool,
         refuse_read_on_scan: bool,
     },
@@ -51,10 +52,10 @@ pub enum EDSObject {
         object_type: ObjectType,
         data_type: DataType,
         access_mode: AccessMode,
-        default: Option<Box<dyn EDSValue + Send>>,
+        default: Option<Box<dyn EDSValue>>,
         pdo_mappable: bool,
-        low_limit: Option<Box<dyn EDSValue + Send>>,
-        high_limit: Option<Box<dyn EDSValue + Send>>,
+        low_limit: Option<Box<dyn EDSValue>>,
+        high_limit: Option<Box<dyn EDSValue>>,
         refuse_write_on_download: bool,
         refuse_read_on_scan: bool,
     },
@@ -64,10 +65,112 @@ pub enum EDSObject {
         object_type: ObjectType,
         data_type: DataType,
         access_mode: AccessMode,
-        default: Option<Box<dyn EDSValue + Send>>,
+        default: Option<Box<dyn EDSValue>>,
         refuse_write_on_download: bool,
         refuse_read_on_scan: bool,
     },
+}
+
+impl Clone for EDSObject {
+    fn clone(&self) -> Self {
+        match &self {
+            EDSObject::CompactEDSArray {
+                address,
+                name,
+                object_type,
+                data_type,
+                access_mode,
+                default,
+                pdo_mappable,
+                low_limit,
+                high_limit,
+                refuse_write_on_download,
+                refuse_read_on_scan,
+            } => EDSObject::CompactEDSArray {
+                address: address.clone(),
+                name: name.clone(),
+                object_type: object_type.clone(),
+                data_type: data_type.clone(),
+                access_mode: access_mode.clone(),
+                default: clone_eds_value(default),
+                pdo_mappable: pdo_mappable.clone(),
+                low_limit: clone_eds_value(low_limit),
+                high_limit: clone_eds_value(high_limit),
+                refuse_write_on_download: refuse_write_on_download.clone(),
+                refuse_read_on_scan: refuse_read_on_scan.clone(),
+            },
+            EDSObject::EDSArray {
+                address,
+                name,
+                object_type,
+                sub_number,
+                entries,
+                refuse_write_on_download,
+                refuse_read_on_scan,
+            } => EDSObject::EDSArray {
+                address: address.clone(),
+                name: name.clone(),
+                object_type: object_type.clone(),
+                sub_number: sub_number.clone(),
+                entries: entries.clone(),
+                refuse_write_on_download: refuse_write_on_download.clone(),
+                refuse_read_on_scan: refuse_read_on_scan.clone(),
+            },
+            EDSObject::EDSDomain {
+                address,
+                name,
+                object_type,
+                data_type,
+                access_mode,
+                default,
+                refuse_write_on_download,
+                refuse_read_on_scan,
+            } => EDSObject::EDSDomain {
+                address: address.clone(),
+                name: name.clone(),
+                object_type: object_type.clone(),
+                data_type: data_type.clone(),
+                access_mode: access_mode.clone(),
+                default: clone_eds_value(default),
+                refuse_write_on_download: refuse_write_on_download.clone(),
+                refuse_read_on_scan: refuse_read_on_scan.clone(),
+            },
+            EDSObject::EDSNull {
+                address,
+                name,
+                object_type,
+            } => EDSObject::EDSNull {
+                address: address.clone(),
+                name: name.clone(),
+                object_type: object_type.clone(),
+            },
+            EDSObject::EDSVariable {
+                address,
+                name,
+                object_type,
+                data_type,
+                access_mode,
+                default,
+                pdo_mappable,
+                low_limit,
+                high_limit,
+                refuse_write_on_download,
+                refuse_read_on_scan,
+            } => EDSObject::EDSVariable {
+                address: address.clone(),
+                name: name.clone(),
+                object_type: object_type.clone(),
+                data_type: data_type.clone(),
+                access_mode: access_mode.clone(),
+                default: clone_eds_value(default),
+                pdo_mappable: pdo_mappable.clone(),
+                low_limit: clone_eds_value(low_limit),
+                high_limit: clone_eds_value(high_limit),
+                refuse_write_on_download: refuse_write_on_download.clone(),
+                refuse_read_on_scan: refuse_read_on_scan.clone(),
+            },
+        }
+    }
 }
 
 impl EDSObject {
@@ -296,7 +399,7 @@ impl EDSObject {
         obj: &StructuredFileObject,
         data_type: &DataType,
         name: &str,
-    ) -> Result<Option<Box<dyn EDSValue + Send>>, ParseError> {
+    ) -> Result<Option<Box<dyn EDSValue>>, ParseError> {
         if obj.get_value(name).is_none() {
             return Ok(None);
         }

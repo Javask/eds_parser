@@ -1,19 +1,82 @@
 use std::fmt::Debug;
+use std::marker::Send;
 
-pub trait EDSValue: Debug {}
-impl EDSValue for bool {}
-impl EDSValue for u8 {}
-impl EDSValue for u16 {}
-impl EDSValue for u32 {}
-impl EDSValue for u64 {}
-impl EDSValue for i8 {}
-impl EDSValue for i16 {}
-impl EDSValue for i32 {}
-impl EDSValue for i64 {}
-impl EDSValue for f32 {}
-impl EDSValue for f64 {}
-impl EDSValue for String {}
-impl EDSValue for Vec<u8> {}
+pub trait EDSValue: Debug + Send {
+    fn clone_box(&self) -> Box<dyn EDSValue>;
+}
+
+impl EDSValue for bool {
+    fn clone_box(&self) -> Box<dyn EDSValue> {
+        Box::new(self.clone())
+    }
+}
+impl EDSValue for u8 {
+    fn clone_box(&self) -> Box<dyn EDSValue> {
+        Box::new(self.clone())
+    }
+}
+impl EDSValue for u16 {
+    fn clone_box(&self) -> Box<dyn EDSValue> {
+        Box::new(self.clone())
+    }
+}
+impl EDSValue for u32 {
+    fn clone_box(&self) -> Box<dyn EDSValue> {
+        Box::new(self.clone())
+    }
+}
+impl EDSValue for u64 {
+    fn clone_box(&self) -> Box<dyn EDSValue> {
+        Box::new(self.clone())
+    }
+}
+impl EDSValue for i8 {
+    fn clone_box(&self) -> Box<dyn EDSValue> {
+        Box::new(self.clone())
+    }
+}
+impl EDSValue for i16 {
+    fn clone_box(&self) -> Box<dyn EDSValue> {
+        Box::new(self.clone())
+    }
+}
+impl EDSValue for i32 {
+    fn clone_box(&self) -> Box<dyn EDSValue> {
+        Box::new(self.clone())
+    }
+}
+impl EDSValue for i64 {
+    fn clone_box(&self) -> Box<dyn EDSValue> {
+        Box::new(self.clone())
+    }
+}
+impl EDSValue for f32 {
+    fn clone_box(&self) -> Box<dyn EDSValue> {
+        Box::new(self.clone())
+    }
+}
+impl EDSValue for f64 {
+    fn clone_box(&self) -> Box<dyn EDSValue> {
+        Box::new(self.clone())
+    }
+}
+impl EDSValue for String {
+    fn clone_box(&self) -> Box<dyn EDSValue> {
+        Box::new(self.clone())
+    }
+}
+impl EDSValue for Vec<u8> {
+    fn clone_box(&self) -> Box<dyn EDSValue> {
+        Box::new(self.clone())
+    }
+}
+
+pub fn clone_eds_value(x: &Option<Box<dyn EDSValue>>) -> Option<Box<dyn EDSValue>> {
+    match x {
+        None => None,
+        Some(val) => Some(val.clone_box()),
+    }
+}
 
 #[derive(Debug, PartialEq, Clone)]
 pub enum DataType {
