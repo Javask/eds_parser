@@ -32,7 +32,7 @@ use utils::parse_required_uint;
 use super::structured_file::StructuredFile;
 use crate::ParseError;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct EDSFile {
     pub file_info: EDSFileInfo,
     pub device_info: EDSDeviceInfo,
