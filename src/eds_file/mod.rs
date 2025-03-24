@@ -21,6 +21,7 @@ use std::collections::HashMap;
 pub use address::Address;
 pub use access_mode::AccessMode;
 pub use object_type::ObjectType;
+pub use data_type::*;
 
 pub use eds_device_info::EDSDeviceInfo;
 pub use eds_file_info::EDSFileInfo;

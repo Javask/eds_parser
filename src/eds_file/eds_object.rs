@@ -8,7 +8,7 @@ use crate::{
 use super::{
     Address,
     access_mode::AccessMode,
-    data_type::{DataType, EDSData, EDSDataStruct},
+    data_type::{DataType, EDSValue},
     object_type::ObjectType,
     utils::{
         parse_required_bool, parse_required_double, parse_required_float, parse_required_hex_data,
@@ -29,10 +29,10 @@ pub enum EDSObject {
         object_type: ObjectType,
         data_type: DataType,
         access_mode: AccessMode,
-        default: Option<Box<dyn EDSData + Send>>,
+        default: Option<Box<dyn EDSValue + Send>>,
         pdo_mappable: bool,
-        low_limit: Option<Box<dyn EDSData + Send>>,
-        high_limit: Option<Box<dyn EDSData + Send>>,
+        low_limit: Option<Box<dyn EDSValue + Send>>,
+        high_limit: Option<Box<dyn EDSValue + Send>>,
         refuse_write_on_download: bool,
         refuse_read_on_scan: bool,
     },
@@ -51,10 +51,10 @@ pub enum EDSObject {
         object_type: ObjectType,
         data_type: DataType,
         access_mode: AccessMode,
-        default: Option<Box<dyn EDSData + Send>>,
+        default: Option<Box<dyn EDSValue + Send>>,
         pdo_mappable: bool,
-        low_limit: Option<Box<dyn EDSData + Send>>,
-        high_limit: Option<Box<dyn EDSData + Send>>,
+        low_limit: Option<Box<dyn EDSValue + Send>>,
+        high_limit: Option<Box<dyn EDSValue + Send>>,
         refuse_write_on_download: bool,
         refuse_read_on_scan: bool,
     },
@@ -64,17 +64,12 @@ pub enum EDSObject {
         object_type: ObjectType,
         data_type: DataType,
         access_mode: AccessMode,
-        default: Option<Box<dyn EDSData + Send>>,
+        default: Option<Box<dyn EDSValue + Send>>,
         refuse_write_on_download: bool,
         refuse_read_on_scan: bool,
     },
 }
 
-impl Debug for dyn EDSData + Send {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        (self as &dyn EDSData).fmt(f)
-    }
-}
 
 impl EDSObject {
     pub fn get_address(&self) -> &Address {
@@ -302,28 +297,28 @@ impl EDSObject {
         obj: &StructuredFileObject,
         data_type: &DataType,
         name: &str,
-    ) -> Result<Option<Box<dyn EDSData + Send>>, ParseError> {
+    ) -> Result<Option<Box<dyn EDSValue + Send>>, ParseError> {
         if obj.get_value(name).is_none() {
             return Ok(None);
         }
         match data_type {
-            DataType::Boolean => Ok(Some(EDSDataStruct::new(parse_required_bool(obj, name)?))),
-            DataType::UInt8 => Ok(Some(EDSDataStruct::new(parse_required_uint::<u8>(
+            DataType::Boolean => Ok(Some(Box::new(parse_required_bool(obj, name)?))),
+            DataType::UInt8 => Ok(Some(Box::new(parse_required_uint::<u8>(
                 obj, name,
             )?))),
-            DataType::UInt16 => Ok(Some(EDSDataStruct::new(parse_required_uint::<u16>(
+            DataType::UInt16 => Ok(Some(Box::new(parse_required_uint::<u16>(
                 obj, name,
             )?))),
-            DataType::UInt32 => Ok(Some(EDSDataStruct::new(parse_required_uint::<u32>(
+            DataType::UInt32 => Ok(Some(Box::new(parse_required_uint::<u32>(
                 obj, name,
             )?))),
-            DataType::UInt64 => Ok(Some(EDSDataStruct::new(parse_required_uint::<u64>(
+            DataType::UInt64 => Ok(Some(Box::new(parse_required_uint::<u64>(
                 obj, name,
             )?))),
-            DataType::OctettString | DataType::Domain => Ok(Some(EDSDataStruct::new(
+            DataType::OctettString | DataType::Domain => Ok(Some(Box::new(
                 parse_required_hex_data(obj, name)?,
             ))),
-            DataType::UnicodeString => Ok(Some(EDSDataStruct::new(
+            DataType::UnicodeString => Ok(Some(Box::new(
                 parse_required_str(obj, name)?.clone(),
             ))),
             DataType::VisibleString => {
@@ -334,23 +329,23 @@ impl EDSObject {
                         section: obj.get_name().clone(),
                     })
                 } else {
-                    Ok(Some(EDSDataStruct::new(val)))
+                    Ok(Some(Box::new(val)))
                 }
             }
-            DataType::Int8 => Ok(Some(EDSDataStruct::new(
+            DataType::Int8 => Ok(Some(Box::new(
                 parse_required_uint::<u8>(obj, name)? as i8,
             ))),
-            DataType::Int16 => Ok(Some(EDSDataStruct::new(
+            DataType::Int16 => Ok(Some(Box::new(
                 parse_required_uint::<u16>(obj, name)? as i16,
             ))),
-            DataType::Int32 => Ok(Some(EDSDataStruct::new(
+            DataType::Int32 => Ok(Some(Box::new(
                 parse_required_uint::<u32>(obj, name)? as i32,
             ))),
-            DataType::Int64 => Ok(Some(EDSDataStruct::new(
+            DataType::Int64 => Ok(Some(Box::new(
                 parse_required_uint::<u64>(obj, name)? as i64,
             ))),
-            DataType::Real32 => Ok(Some(EDSDataStruct::new(parse_required_float(obj, name)?))),
-            DataType::Real64 => Ok(Some(EDSDataStruct::new(parse_required_double(obj, name)?))),
+            DataType::Real32 => Ok(Some(Box::new(parse_required_float(obj, name)?))),
+            DataType::Real64 => Ok(Some(Box::new(parse_required_double(obj, name)?))),
         }
     }
 

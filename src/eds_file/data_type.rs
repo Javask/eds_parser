@@ -1,39 +1,19 @@
-use std::fmt::{Debug, Formatter};
+use std::fmt::Debug;
 
-pub trait EDSDataType: Debug {}
-pub trait EDSData {
-    fn format(&self, f: &mut Formatter) -> std::fmt::Result;
-}
-
-impl Debug for dyn EDSData {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        self.format(f)
-    }
-}
-
-impl EDSDataType for bool {}
-impl EDSDataType for u8 {}
-impl EDSDataType for u16 {}
-impl EDSDataType for u32 {}
-impl EDSDataType for u64 {}
-impl EDSDataType for i8 {}
-impl EDSDataType for i16 {}
-impl EDSDataType for i32 {}
-impl EDSDataType for i64 {}
-impl EDSDataType for f32 {}
-impl EDSDataType for f64 {}
-impl EDSDataType for String {}
-impl EDSDataType for Vec<u8> {}
-
-#[derive(Debug)]
-pub struct EDSDataStruct<E: EDSDataType> {
-    val: E,
-}
-impl<E: EDSDataType> EDSData for EDSDataStruct<E> {
-    fn format(&self, f: &mut Formatter) -> std::fmt::Result {
-        write!(f, "EDSDataStruct {{{:?}}}", self.val)
-    }
-}
+pub trait EDSValue: Debug {}
+impl EDSValue for bool {}
+impl EDSValue for u8 {}
+impl EDSValue for u16 {}
+impl EDSValue for u32 {}
+impl EDSValue for u64 {}
+impl EDSValue for i8 {}
+impl EDSValue for i16 {}
+impl EDSValue for i32 {}
+impl EDSValue for i64 {}
+impl EDSValue for f32 {}
+impl EDSValue for f64 {}
+impl EDSValue for String {}
+impl EDSValue for Vec<u8> {}
 
 #[derive(Debug, PartialEq)]
 pub enum DataType {
@@ -54,11 +34,6 @@ pub enum DataType {
     Domain,
 }
 
-impl<T: EDSDataType + 'static> EDSDataStruct<T> {
-    pub fn new(val: T) -> Box<EDSDataStruct<T>> {
-        Box::new(EDSDataStruct { val: val })
-    }
-}
 
 impl DataType {
     pub fn parse(val: u16) -> Option<DataType> {
