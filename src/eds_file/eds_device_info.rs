@@ -2,7 +2,7 @@ use crate::{ParseError, structured_file::StructuredFileObject};
 
 use super::utils::{parse_required_bool, parse_required_str, parse_required_uint};
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct EDSDeviceInfo {
     pub vendor_name: String,
     pub vendor_number: u32, //0x1000.1

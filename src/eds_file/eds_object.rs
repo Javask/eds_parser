@@ -70,7 +70,6 @@ pub enum EDSObject {
     },
 }
 
-
 impl EDSObject {
     pub fn get_address(&self) -> &Address {
         match &self {
@@ -303,24 +302,14 @@ impl EDSObject {
         }
         match data_type {
             DataType::Boolean => Ok(Some(Box::new(parse_required_bool(obj, name)?))),
-            DataType::UInt8 => Ok(Some(Box::new(parse_required_uint::<u8>(
-                obj, name,
-            )?))),
-            DataType::UInt16 => Ok(Some(Box::new(parse_required_uint::<u16>(
-                obj, name,
-            )?))),
-            DataType::UInt32 => Ok(Some(Box::new(parse_required_uint::<u32>(
-                obj, name,
-            )?))),
-            DataType::UInt64 => Ok(Some(Box::new(parse_required_uint::<u64>(
-                obj, name,
-            )?))),
-            DataType::OctettString | DataType::Domain => Ok(Some(Box::new(
-                parse_required_hex_data(obj, name)?,
-            ))),
-            DataType::UnicodeString => Ok(Some(Box::new(
-                parse_required_str(obj, name)?.clone(),
-            ))),
+            DataType::UInt8 => Ok(Some(Box::new(parse_required_uint::<u8>(obj, name)?))),
+            DataType::UInt16 => Ok(Some(Box::new(parse_required_uint::<u16>(obj, name)?))),
+            DataType::UInt32 => Ok(Some(Box::new(parse_required_uint::<u32>(obj, name)?))),
+            DataType::UInt64 => Ok(Some(Box::new(parse_required_uint::<u64>(obj, name)?))),
+            DataType::OctettString | DataType::Domain => {
+                Ok(Some(Box::new(parse_required_hex_data(obj, name)?)))
+            }
+            DataType::UnicodeString => Ok(Some(Box::new(parse_required_str(obj, name)?.clone()))),
             DataType::VisibleString => {
                 let val = parse_required_str(obj, name)?.clone();
                 if !val.is_ascii() {
@@ -332,18 +321,16 @@ impl EDSObject {
                     Ok(Some(Box::new(val)))
                 }
             }
-            DataType::Int8 => Ok(Some(Box::new(
-                parse_required_uint::<u8>(obj, name)? as i8,
-            ))),
-            DataType::Int16 => Ok(Some(Box::new(
-                parse_required_uint::<u16>(obj, name)? as i16,
-            ))),
-            DataType::Int32 => Ok(Some(Box::new(
-                parse_required_uint::<u32>(obj, name)? as i32,
-            ))),
-            DataType::Int64 => Ok(Some(Box::new(
-                parse_required_uint::<u64>(obj, name)? as i64,
-            ))),
+            DataType::Int8 => Ok(Some(Box::new(parse_required_uint::<u8>(obj, name)? as i8))),
+            DataType::Int16 => Ok(Some(
+                Box::new(parse_required_uint::<u16>(obj, name)? as i16),
+            )),
+            DataType::Int32 => Ok(Some(
+                Box::new(parse_required_uint::<u32>(obj, name)? as i32),
+            )),
+            DataType::Int64 => Ok(Some(
+                Box::new(parse_required_uint::<u64>(obj, name)? as i64),
+            )),
             DataType::Real32 => Ok(Some(Box::new(parse_required_float(obj, name)?))),
             DataType::Real64 => Ok(Some(Box::new(parse_required_double(obj, name)?))),
         }

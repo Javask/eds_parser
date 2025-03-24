@@ -3,7 +3,7 @@ use crate::ParseError;
 use crate::structured_file::StructuredFileObject;
 use regex::Regex;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct EDSTime {
     pub hour: u8,
     pub minute: u8,

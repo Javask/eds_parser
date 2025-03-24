@@ -1,7 +1,7 @@
 use crate::ParseError;
 use crate::structured_file::StructuredFileObject;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum EDSVersion {
     V3_0,
     V4_0,

@@ -1,6 +1,6 @@
 use std::fmt::Display;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum ObjectType {
     Variable,
     Array,
@@ -26,16 +26,16 @@ impl ObjectType {
     }
 }
 
-impl Display for ObjectType{
+impl Display for ObjectType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match &self{
-            ObjectType::Null => write!(f,"Null"),
-            ObjectType::Domain => write!(f,"Domain"),
-            ObjectType::Deftype => write!(f,"Deftype"),
-            ObjectType::Defstruct => write!(f,"Defstruct"),
-            ObjectType::Variable => write!(f,"Variable"),
-            ObjectType::Array => write!(f,"Array"),
-            ObjectType::Record => write!(f,"Record"),
+        match &self {
+            ObjectType::Null => write!(f, "Null"),
+            ObjectType::Domain => write!(f, "Domain"),
+            ObjectType::Deftype => write!(f, "Deftype"),
+            ObjectType::Defstruct => write!(f, "Defstruct"),
+            ObjectType::Variable => write!(f, "Variable"),
+            ObjectType::Array => write!(f, "Array"),
+            ObjectType::Record => write!(f, "Record"),
         }
     }
 }

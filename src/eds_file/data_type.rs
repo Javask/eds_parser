@@ -15,7 +15,7 @@ impl EDSValue for f64 {}
 impl EDSValue for String {}
 impl EDSValue for Vec<u8> {}
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum DataType {
     Boolean,
     UInt8,
@@ -33,7 +33,6 @@ pub enum DataType {
     OctettString,
     Domain,
 }
-
 
 impl DataType {
     pub fn parse(val: u16) -> Option<DataType> {

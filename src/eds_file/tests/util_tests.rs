@@ -211,14 +211,17 @@ fn test_parse_uint() {
 }
 
 #[test]
-fn test_parse_date_time_combo(){
+fn test_parse_date_time_combo() {
     let mut obj = StructuredFileObject::new("test_sec".to_string());
-    obj.get_values_mut().insert("test_1_time".to_string(), "09:05PM".to_string());
-    obj.get_values_mut().insert("test_2_time".to_string(), "09:05PM".to_string());
-    obj.get_values_mut().insert("test_1_date".to_string(), "05-16-1999".to_string());
-    obj.get_values_mut().insert("test_3_date".to_string(), "05-16-1999".to_string());
+    obj.get_values_mut()
+        .insert("test_1_time".to_string(), "09:05PM".to_string());
+    obj.get_values_mut()
+        .insert("test_2_time".to_string(), "09:05PM".to_string());
+    obj.get_values_mut()
+        .insert("test_1_date".to_string(), "05-16-1999".to_string());
+    obj.get_values_mut()
+        .insert("test_3_date".to_string(), "05-16-1999".to_string());
     assert!(parse_date_time_combo(&obj, "test_1_date", "test_1_time").is_ok());
     assert!(!parse_date_time_combo(&obj, "test_2_date", "test_2_time").is_ok());
     assert!(!parse_date_time_combo(&obj, "test_3_date", "test_3_time").is_ok());
-
 }

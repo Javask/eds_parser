@@ -1,10 +1,10 @@
 mod eds_device_info;
 mod eds_file_info;
 
-mod address;
-mod object_type;
 mod access_mode;
+mod address;
 mod data_type;
+mod object_type;
 
 mod eds_date;
 mod eds_object;
@@ -18,10 +18,10 @@ mod tests;
 
 use std::collections::HashMap;
 
-pub use address::Address;
 pub use access_mode::AccessMode;
-pub use object_type::ObjectType;
+pub use address::Address;
 pub use data_type::*;
+pub use object_type::ObjectType;
 
 pub use eds_device_info::EDSDeviceInfo;
 pub use eds_file_info::EDSFileInfo;

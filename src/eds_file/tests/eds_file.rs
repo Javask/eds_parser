@@ -57,7 +57,6 @@ fn test_phase_3_success() {
     let _efile = EDSFile::parse(sfile).expect("Failed to parse eds file!");
 }
 
-
 #[test]
 fn test_phase_3_invalid_granularity() {
     let data = vec![
@@ -111,14 +110,12 @@ fn test_phase_3_invalid_granularity() {
     let efile = EDSFile::parse(sfile);
     assert!(efile.is_err());
     let err = efile.unwrap_err();
-    let ParseError::InvalidValueFormat { object, section } = err else{
+    let ParseError::InvalidValueFormat { object, section } = err else {
         panic!();
     };
-    assert_eq!(object,"Granularity");
-    assert_eq!(section,"DeviceInfo");
-
+    assert_eq!(object, "Granularity");
+    assert_eq!(section, "DeviceInfo");
 }
-
 
 #[test]
 fn test_phase_3_incomplete_file_info() {

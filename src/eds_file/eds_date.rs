@@ -4,11 +4,11 @@ use crate::{ParseError, structured_file::StructuredFileObject};
 
 use super::utils::parse_required_str;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct EDSDate {
-   pub year: i32,
-   pub month: u8,
-   pub day: u8,
+    pub year: i32,
+    pub month: u8,
+    pub day: u8,
 }
 
 impl EDSDate {
@@ -41,7 +41,7 @@ impl EDSDate {
                 section: obj.get_name().to_string(),
             }))?;
         //TODO find out which months have how many days
-        if days > 31 || months > 12 || months == 0 || days == 0{
+        if days > 31 || months > 12 || months == 0 || days == 0 {
             return Err(ParseError::InvalidValueFormat {
                 object: name.to_string(),
                 section: obj.get_name().to_string(),

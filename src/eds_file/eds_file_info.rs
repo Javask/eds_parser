@@ -1,11 +1,11 @@
 use chrono::{DateTime, Utc};
 
 use super::EDSVersion;
-use crate::structured_file::StructuredFileObject;
 use crate::ParseError;
 use crate::eds_file::utils::*;
+use crate::structured_file::StructuredFileObject;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct EDSFileInfo {
     pub file_name: String,
     pub file_version: u8,
@@ -36,10 +36,10 @@ impl EDSFileInfo {
             file_revision: file_revision,
             eds_version: eds_version,
             description: description.clone(),
-            creation:creation,
-            created_by:created_by.clone(),
+            creation: creation,
+            created_by: created_by.clone(),
             modification: modification,
-            modified_by: modified_by.clone()
+            modified_by: modified_by.clone(),
         })
     }
 }
